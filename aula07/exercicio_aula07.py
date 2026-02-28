@@ -6,7 +6,6 @@
 # • idade
 # • cidade
 # Guarde em um dicionário e mostre na tela.
-"""
 usuario = {
     "nome": " ",
     "idade": " ",
@@ -19,7 +18,7 @@ print("\n")
 for c, v in usuario.items():
     print(f"{c} : {v}")
 print("\n")
-"""
+
 # Criar um dicionário com dados digitados pelo usuário.
 # • nome do aluno
 # • nota1
