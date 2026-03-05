@@ -1,0 +1,2 @@
+nome: Daniel, idade: 25
+nome: Bernardo, idade: 33
