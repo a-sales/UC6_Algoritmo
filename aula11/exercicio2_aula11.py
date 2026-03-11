@@ -1,3 +1,5 @@
+import requests
+
 # Data da entrega: 15/03/2025
 
 # Criar um menu para selecao
@@ -41,3 +43,27 @@
 },
 "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
 """
+
+dig = "a"
+while True:
+    print("\nMenu de opções:\n\n1 - Consultar por ID.\n2 - Consultar por nome.\n3 - Lista de personagens.\n")
+    if dig.isnumeric():
+        opcao = int(dig)
+        print(opcao)
+        if opcao == 1:
+            id = int(input("Digite o ID do personagem: "))
+            url_api = f"https://rickandmortyapi.com/api/character/{id}"
+            resultado = requests.get(url_api)
+            json = resultado.json()
+            for i in json:
+                print(f"\n{i} : {json[i]}\n")
+        elif opcao == 2:
+            print("sdaf")
+        else:
+            print("sdaf")
+
+        break
+
+    else:
+        dig = input("Escolha uma numero: ")
+        
