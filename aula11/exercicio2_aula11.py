@@ -55,7 +55,7 @@ while True:
             url_api = f"https://rickandmortyapi.com/api/character/{id}"
             resultado = requests.get(url_api)
             json = resultado.json()
-            
+
             for i in json:
                 print(f"{i} : {json[i]}")
 
@@ -91,7 +91,7 @@ while True:
 
         else:
             print("\nNenhuma opção selecionada.\n")
-            break
+            dig = "a"
 
     else:
         dig = input("Escolha uma numero: ")
