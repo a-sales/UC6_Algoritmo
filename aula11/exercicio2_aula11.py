@@ -43,7 +43,7 @@ import requests
 },
 "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
 """
-
+n=0
 dig = "a"
 while True:
     print("\nMenu de opções:\n\n1 - Consultar por ID.\n2 - Consultar por nome.\n3 - Lista de personagens.\n")
@@ -55,14 +55,43 @@ while True:
             url_api = f"https://rickandmortyapi.com/api/character/{id}"
             resultado = requests.get(url_api)
             json = resultado.json()
+            
             for i in json:
-                print(f"\n{i} : {json[i]}\n")
-        elif opcao == 2:
-            print("sdaf")
-        else:
-            print("sdaf")
+                print(f"{i} : {json[i]}")
 
-        break
+        elif opcao == 2:
+            name = input("Digite o nome do personagem: ")
+            url_api = f"https://rickandmortyapi.com/api/character/"
+            resultado = requests.get(url_api)
+            json = resultado.json()
+
+            for i in json["results"]:
+                id_tmp = i["id"]
+                if i["name"] == name:
+                    id = id_tmp
+            
+            url_api = f"https://rickandmortyapi.com/api/character/{id}"
+            resultado = requests.get(url_api)
+            json = resultado.json()
+
+            for i in json:
+                print(f"{i} : {json[i]}")
+
+        elif opcao == 3:
+            url_api = f"https://rickandmortyapi.com/api/character/"
+            resultado = requests.get(url_api)
+            json = resultado.json()
+            print(json["results"])
+
+            for i in json["results"]:
+                for r in i:
+                    print(f"{r} - {i[r]}")
+                print("\n")
+            break
+
+        else:
+            print("\nNenhuma opção selecionada.\n")
+            break
 
     else:
         dig = input("Escolha uma numero: ")
