@@ -60,23 +60,26 @@ def n_conta():
     try:
         leitura_excel = pd.read_excel("aula14\BANCO\Base_numero_conta.xlsx")
         linha = len(leitura_excel)
-        nc = linha
+        #nc = linha
         #nc = leitura_excel["numero_conta"]
-
-        if nc >= 0 and nc <= 100:
+        
+        if linha < 101:
             nc += 1
+            print(nc)
             #leitura_excel.loc["numero_conta"] = nc
             #leitura_excel.to_excel("aula14\BANCO\Base_numero_conta.xlsx")
-            dados = {"numero_conta": [nc]}
-            leitura_excel.loc[nc, "numero_conta"] = dados["numero_conta"]
-            excel.to_excel("aula14\BANCO\Base_numero_conta.xlsx")
+            #dados = {"numero_conta": nc}
+            
+            leitura_excel.loc[len(leitura_excel)] =  nc
+            leitura_excel.to_excel("aula14\BANCO\Base_numero_conta.xlsx")
             return(nc)
+        
     except:
         nc = 0
         dados = {"numero_conta": [nc] }
         excel = pd.DataFrame(dados)
         excel.to_excel("aula14\BANCO\Base_numero_conta.xlsx", index = False)
-        print("erro")
+        #print("erro")
         return(nc)
     
 
