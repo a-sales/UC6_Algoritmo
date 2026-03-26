@@ -83,7 +83,7 @@ def n_agencia():
     else:
         na = int(df["numero_agencia"].iloc[-1]) + 1
 
-    if na > 100:
+    if na < 400 and na > 700:
         print("Limite de 100 agências atingido!")
         return None
 
