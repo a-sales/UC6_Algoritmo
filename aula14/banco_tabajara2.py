@@ -55,44 +55,60 @@ Ao finalizar mostrar para o usuário o nome_cliente, cpf, tipo_conta, numero_con
 import pandas as pd
 
 
-caminho_conta = "aula14\BANCO\Base_numero_conta.xlsx"
-caminho_agencia = "aula14\BANCO\Base_numero_agencia.xlsx"
-caminho_banco = "aula14\BANCO\Base_BANCO_TABAJARA.xlsx"
+caminho_conta = "aula14\BANCO\Base_numero_conta.xlsx"  # um único caminho
 
 def n_conta():
-    df = pd.read_excel(caminho_conta)
-
-    if len(df) == 0:
-        nc = 1
+    leitura_excel = pd.read_excel(caminho_conta)
+    
+    if len(leitura_excel) == 0:
+        print("Arquivo vazio!")
+        return None
+    
+    # Pega o último número e incrementa
+    nc = leitura_excel["numero_conta"].iloc[-1]
+    nc += 1
+    
+    if nc <= 100:
+        linha = len(leitura_excel)
+        leitura_excel.loc[linha, "numero_conta"] = nc
+        leitura_excel.to_excel(caminho_conta, index=False)  # ← salva no mesmo arquivo
+        return nc
     else:
-        nc = int(df["numero_conta"].iloc[-1]) + 1
-
-    if nc > 100:
         print("Limite de 100 contas atingido!")
         return None
+    
+#test = n_conta()
+#print(test)
 
-    # Sobrescreve o arquivo com apenas o último número
-    pd.DataFrame([{"numero_conta": nc}]).to_excel(caminho_conta, index=False)
-    return nc
+caminho_agencia = "aula14\BANCO\Base_numero_agencia.xlsx"
 
 def n_agencia():
-    df = pd.read_excel(caminho_agencia)
-
-    if len(df) == 0:
-        na = 1
-    else:
-        na = int(df["numero_agencia"].iloc[-1]) + 1
-
-    if na > 100:
-        print("Limite de 100 agências atingido!")
+    leitura_excel = pd.read_excel(caminho_agencia)
+    
+    if len(leitura_excel) == 0:
+        print("Arquivo vazio!")
         return None
+    
+    # Pega o último número e incrementa
+    na = leitura_excel["numero_agencia"].iloc[-1]
+    na += 1
+    
+    if na <= 100:
+        linha = len(leitura_excel)
+        leitura_excel.loc[linha, "numero_agencia"] = na
+        leitura_excel.to_excel(caminho_agencia, index=False)  # ← salva no mesmo arquivo
+        return na
+    else:
+        print("Limite de 100 contas atingido!")
+        return None
+    
+#test = n_agencia()
+#print(test)
 
-    # Sobrescreve o arquivo com apenas o último número
-    pd.DataFrame([{"numero_agencia": na}]).to_excel(caminho_agencia, index=False)
-    return na
+caminho_banco = "aula14\BANCO\Base_BANCO_TABAJARA.xlsx"
 
 while True:
-    opcao = input(f"\nMenu de opções:\n\n1 - Criar conta\n2 - Acessar conta\n\nOpcao digitada: ")
+    opcao = input(f"\nCrie um menu com as seguintes opções:\n\n1 - Criar conta\n2 - Acessar conta\n\nOpcao digitada: ")
     if opcao == "1":
         print("\n1 - Criar conta\n")
         nome_cliente = input("Digite seu nome completo: ")
@@ -102,10 +118,10 @@ while True:
         numero_conta = n_conta()
         numero_agencia = n_agencia()
         extrato_bancario = float(0)
-        deposito = float(0)
-        saque = float(0)
+    
+        print(f"\nDados: {nome_cliente} | {cpf} | {tipo_conta} | {numero_conta} | {numero_agencia} | {extrato_bancario}")
 
-        if None in [nome_cliente, cpf, tipo_conta, numero_conta, numero_agencia, deposito, saque]:
+        if None in [nome_cliente, cpf, tipo_conta, numero_conta, numero_agencia]:
             print("Erro: algum dado está vazio, cadastro cancelado!")
             continue
 
@@ -116,43 +132,15 @@ while True:
             "numero_conta":     numero_conta,
             "cpf":              cpf,
             "agencia":          numero_agencia,
-            "extrato_bancario": extrato_bancario,
-            "deposito":         deposito,
-            "saque":            saque
+            "extrato_bancario": extrato_bancario
         }])
 
         leitura_excel = pd.concat([leitura_excel, nova_linha], ignore_index=True)
         leitura_excel.to_excel(caminho_banco, index=False)
-        print("\nCadastro realizado com sucesso!")
-        #print(leitura_excel)
-        
-        print(f"\nDados: {nome_cliente} | {cpf} | {tipo_conta} | {numero_conta} | {numero_agencia} | {extrato_bancario}")
+        print("Cadastro realizado com sucesso!")
+        print(leitura_excel)
 
     elif opcao == "2":
         print("\n2 - Acessar conta\n")
-        cpf          = input("Digite seu CPF: ")
-        numero_conta = int(input("Digite o numero da sua conta: "))
-
-        leitura_excel = pd.read_excel(caminho_banco, dtype={"cpf": str})  # ← força CPF como string
-
-        resultado = leitura_excel[
-            (leitura_excel["cpf"] == cpf) & 
-            (leitura_excel["numero_conta"] == numero_conta)
-        ]
-
-        if len(resultado) > 0:
-            print("\nBem-vindo", resultado["nome_cliente"].values[0])
-            print("Usuário encontrado!")
-            print("Nome:", resultado["nome_cliente"].values[0])
-            print("CPF:", resultado["cpf"].values[0])
-            print("Conta:", resultado["numero_conta"].values[0])
-            print("Agência:", resultado["agencia"].values[0])
-            print("Tipo:", resultado["tipo_conta"].values[0])
-            print("Saldo:", resultado["extrato_bancario"].values[0])
-            print("Deposito:", resultado["deposito"].values[0])
-            print("Saque:", resultado["saque"].values[0])
-        else:
-            print("\nCPF ou número de conta inválido!")
-
     else:
         print("\nOpcao invalida, escolha uma opcao valida!\n")
