@@ -50,7 +50,39 @@ Ao finalizar mostrar para o usuário o nome_cliente, cpf, tipo_conta, numero_con
 2 - Acessar conta > É necessário que o usuário passe os seguites dados:
 - cpf
 - numero_conta
-> Precisa percorrer o excel e encontra o cliente com os mesmo dados de cpf e numero_conta caso encontre o cliente na base retornar uma mensagem: "Bem-vindo "nome_cliente" ao banco Tabajara" SENAO se o usuario não existir na base então retornamos uma mensagem "Usuário não encontrado, tentar novamente ou realizar o cadastro"
+> Precisa percorrer o excel e encontra o cliente com os mesmo dados de cpf e numero_conta caso encontre o cliente na base retornar uma mensagem: "Bem-vindo "nome_cliente" ao banco Tabajara" SENAO se o usuario não existir na base então retornamos uma mensagem "Usuário não encontrado, tentar novamente ou realizar o cadastro" 
+
+-------------------------------------------------- SEGUNDA PARTE --------------------------------------------------
+
+Quando o usuário selecionar a opção "2 - Acessar conta" e o campo cpf e numero_conta forem encontrados na base, além de mostrar a mensagem acima, mostre um menu com as seguintes opções:
+
+1 - Saque
+2 - Deposito
+3 - Saldo
+
+Regras para cada opção
+1 - Saque > solicitar ao usuário que digite um valor, podendo ser inteiro ou de ponto flutuante:
+- O valor solicitado para saque não pode ser maior que o valor em conta(coluna extrato_bancario), se for digitado um valor maior encerre o fluxo e mostre a mensagem "Valor maior que o disponivel em conta";
+- Se o valor for menor que o disponivel em conta, realizar a subitração do valor - o valor na coluna coluna extrato_bancario, quando a operação for realizada com sucesso mostre a mensagem 
+print("================================================")
+print(      Saque realizado com sucesso!)
+print(      Saque: (valor Solicitado)
+print(      Valor em conta: (coluna extrato_bancario))
+print(      Taxa para saque: (seguir regras para cada conta))
+print(      Valor de desconto saque: (seguir regras para cada conta))
+print("================================================\n")
+
+OBS: Criar a logica de desconto da taxa para cada conta especifica
+
+2 - Deposito > solicitar ao usuário que digite um valor, podendo ser inteiro ou de ponto flutuante, se o valor for valido então somar com o valor já existente na coluna "extrato_bancario" e mostrar o valor final da conta bancaria(coluna extrato_bancario);
+- Se o usuário digita um número negativo então encerre o fluxo e mostre a mensagem "Numero invalido, operação encerrada";
+
+
+3 - Saldo > Mostre em tela o seguinte template
+print("================================================")
+print("   Tipo conta: (coluna tipo_conta)")
+print("   Saldo em conta: (Coluna extrato_bancario)
+print("================================================\n")
 """
 import pandas as pd
 
@@ -142,15 +174,81 @@ while True:
 
         if len(resultado) > 0:
             print("\nBem-vindo", resultado["nome_cliente"].values[0])
-            print("Usuário encontrado!")
-            print("Nome:", resultado["nome_cliente"].values[0])
-            print("CPF:", resultado["cpf"].values[0])
-            print("Conta:", resultado["numero_conta"].values[0])
-            print("Agência:", resultado["agencia"].values[0])
-            print("Tipo:", resultado["tipo_conta"].values[0])
-            print("Saldo:", resultado["extrato_bancario"].values[0])
-            print("Deposito:", resultado["deposito"].values[0])
-            print("Saque:", resultado["saque"].values[0])
+            # print("Usuário encontrado!")
+            # print("Nome:", resultado["nome_cliente"].values[0])
+            # print("CPF:", resultado["cpf"].values[0])
+            # print("Conta:", resultado["numero_conta"].values[0])
+            # print("Agência:", resultado["agencia"].values[0])
+            # print("Tipo:", resultado["tipo_conta"].values[0])
+            # print("Saldo:", resultado["extrato_bancario"].values[0])
+            # print("Deposito:", resultado["deposito"].values[0])
+            # print("Saque:", resultado["saque"].values[0])
+            numero_conta = resultado["numero_conta"].values[0]
+            extrato_bancario = resultado["extrato_bancario"].values[0]
+
+##################### Segunda Parte Inicio #####################
+
+            oc = input("\nEscolha uma operação\n\n\t1 - Saque\n\t2 - Deposito\n\t3 - Saldo\n\nopção: ")
+            if oc == "1":
+                print("\nOpção selecionada: 1 - Saque\n")
+                while True:
+                    valor_saque_tmp = input("\nDigite um valor para realizar o saque: ")
+                    if valor_saque_tmp.isnumeric():
+                        valor_saque = float(valor_saque_tmp)
+                        test_saque = extrato_bancario - (valor_saque * 1.05)
+                        taxa_saque = valor_saque * 1.05
+                        if test_saque >= 0:
+                            print("\nSaque ", valor_saque , "Com taxa: ", taxa_saque ," Saldo: ", test_saque)
+                            mascara = leitura_excel["numero_conta"] == numero_conta
+                            if mascara.any():
+                                leitura_excel.loc[mascara, "extrato_bancario"] = test_saque
+                                leitura_excel.to_excel(caminho_banco, index=False)
+                            else:
+                                print(f"Conta {numero_conta} não encontrada no arquivo.")
+
+                            break
+                        else:
+                            print("\nValor maior que o disponivel em conta")
+                        #     break
+                        # break
+                    else:
+                        print("\nValor invalido!\n")
+
+            elif oc == "2":
+                print("\nOpção selecionada: 2 - Deposito\n")
+                while True:
+                    valor_deposito_tmp = input("\nDigite um valor para realizar o deposito: ")
+                    if valor_deposito_tmp.isnumeric():
+                        valor_deposit = float(valor_deposito_tmp)
+                        test_deposit = extrato_bancario + valor_deposit
+                        if test_deposit != 0:
+                            print("\nDeposito ", valor_deposit , " Anterior saldo: ", extrato_bancario  ," Saldo: ", test_deposit)
+                            mascara = leitura_excel["numero_conta"] == numero_conta
+                            if mascara.any():
+                                leitura_excel.loc[mascara, "extrato_bancario"] = test_deposit
+                                leitura_excel.to_excel(caminho_banco, index=False)
+                            else:
+                                print(f"Conta {numero_conta} não encontrada no arquivo.")
+
+                            break
+                        else:
+                            print("\nValor maior que o disponivel em conta")
+                        #     break
+                        # break
+                    else:
+                        print("\nValor invalido!\n")
+
+            elif oc == "3":
+                print("\nOpção selecionada: 3 - Saldo\n")
+                while True:
+                    saida_extrato = float(extrato_bancario)
+                    print("O Saldo em conta é: ", saida_extrato )
+                    break
+
+            else:
+                print("Operação invalida!")
+
+##################### Segunda Parte Fim #####################
         else:
             print("\nCPF ou número de conta inválido!")
 
