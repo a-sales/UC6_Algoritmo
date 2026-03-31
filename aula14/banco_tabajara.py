@@ -185,32 +185,74 @@ while True:
             # print("Saque:", resultado["saque"].values[0])
             numero_conta = resultado["numero_conta"].values[0]
             extrato_bancario = resultado["extrato_bancario"].values[0]
+            tipo = resultado["tipo_conta"].values[0]
 
 ##################### Segunda Parte Inicio #####################
 
-            oc = input("\nEscolha uma operação\n\n\t1 - Saque\n\t2 - Deposito\n\t3 - Saldo\n\nopção: ")
+            oc = input("\nEscolha uma operação\n\n\t1 - Saque\n\t2 - Deposito\n\t3 - Saldo\n\t4 - Sair\n\nopção: ")
             if oc == "1":
                 print("\nOpção selecionada: 1 - Saque\n")
                 while True:
                     valor_saque_tmp = input("\nDigite um valor para realizar o saque: ")
                     if valor_saque_tmp.isnumeric():
                         valor_saque = float(valor_saque_tmp)
-                        test_saque = extrato_bancario - (valor_saque * 1.05)
-                        taxa_saque = valor_saque * 1.05
-                        if test_saque >= 0:
-                            print("\nSaque ", valor_saque , "Com taxa: ", taxa_saque ," Saldo: ", test_saque)
-                            mascara = leitura_excel["numero_conta"] == numero_conta
-                            if mascara.any():
-                                leitura_excel.loc[mascara, "extrato_bancario"] = test_saque
-                                leitura_excel.to_excel(caminho_banco, index=False)
-                            else:
-                                print(f"Conta {numero_conta} não encontrada no arquivo.")
+                        # Saques na conta Corrente: 5% de taxa
+                        # Saques na conta Corrente: Poupança 0% de taxa
+                        # Saques na conta Corrente: Salario 2% de taxa
+                        if tipo == "Corrente":
+                            test_saque = extrato_bancario - (valor_saque * 1.05)
+                            taxa_saque = valor_saque * 0.05
+                            if test_saque >= 0:
+                                print("\nSaque ", valor_saque , "Com taxa 5%: ", taxa_saque ," Saldo: ", test_saque, "Tipo de conta: ", tipo)
+                                mascara = leitura_excel["numero_conta"] == numero_conta
+                                if mascara.any():
+                                    leitura_excel.loc[mascara, "extrato_bancario"] = test_saque
+                                    leitura_excel.to_excel(caminho_banco, index=False)
+                                else:
+                                    print(f"Conta {numero_conta} não encontrada no arquivo.")
 
-                            break
+                                break
+                            else:
+                                print("\nValor maior que o disponivel em conta")
+                            #     break
+                            # break
+                        elif tipo == "Poupanca":
+                            test_saque = extrato_bancario - valor_saque
+                            if test_saque >= 0:
+                                print("\nSaque ", valor_saque , "Com taxa: 0% Saldo: ", test_saque, "Tipo de conta: ", tipo)
+                                mascara = leitura_excel["numero_conta"] == numero_conta
+                                if mascara.any():
+                                    leitura_excel.loc[mascara, "extrato_bancario"] = test_saque
+                                    leitura_excel.to_excel(caminho_banco, index=False)
+                                else:
+                                    print(f"Conta {numero_conta} não encontrada no arquivo.")
+
+                                break
+                            else:
+                                print("\nValor maior que o disponivel em conta")
+                            #     break
+                            # break
+                        elif tipo == "Salario":
+                            test_saque = extrato_bancario - (valor_saque * 1.02)
+                            taxa_saque = valor_saque * 0.02
+                            if test_saque >= 0:
+                                print("\nSaque ", valor_saque , "Com taxa 2%: ", taxa_saque ," Saldo: ", test_saque, "Tipo de conta: ", tipo)
+                                mascara = leitura_excel["numero_conta"] == numero_conta
+                                if mascara.any():
+                                    leitura_excel.loc[mascara, "extrato_bancario"] = test_saque
+                                    leitura_excel.to_excel(caminho_banco, index=False)
+                                else:
+                                    print(f"Conta {numero_conta} não encontrada no arquivo.")
+
+                                break
+                            else:
+                                print("\nValor maior que o disponivel em conta")
+                            #     break
+                            # break
                         else:
-                            print("\nValor maior que o disponivel em conta")
-                        #     break
-                        # break
+                            print("Tipo de conta invalida!")
+                            print(tipo)
+                        
                     else:
                         print("\nValor invalido!\n")
 
@@ -240,10 +282,14 @@ while True:
 
             elif oc == "3":
                 print("\nOpção selecionada: 3 - Saldo\n")
-                while True:
-                    saida_extrato = float(extrato_bancario)
-                    print("O Saldo em conta é: ", saida_extrato )
-                    break
+                #while True:
+                saida_extrato = float(extrato_bancario)
+                print("O Saldo em conta é: ", saida_extrato )
+                break
+
+            # elif oc == "4":
+            #     print("\nOpção selecionada: 4 - Sair\n")
+            #     break
 
             else:
                 print("Operação invalida!")
