@@ -165,7 +165,7 @@ while True:
         cpf          = input("Digite seu CPF: ")
         numero_conta = int(input("Digite o numero da sua conta: "))
 
-        leitura_excel = pd.read_excel(caminho_banco, dtype={"cpf": str})  # ← força CPF como string
+        leitura_excel = pd.read_excel(caminho_banco, dtype={'cpf': str, 'extrato_bancario': float})  # ← força CPF como string
 
         resultado = leitura_excel[
             (leitura_excel["cpf"] == cpf) & 
@@ -194,14 +194,24 @@ while True:
                 print("\nOpção selecionada: 1 - Saque\n")
                 while True:
                     valor_saque_tmp = input("\nDigite um valor para realizar o saque: ")
-                    if valor_saque_tmp.isnumeric():
-                        valor_saque = float(valor_saque_tmp)
+                    var_erro = False
+                    try:
+                        valor_saque_tmp = round(float(valor_saque_tmp), 2)# float(valor_saque_tmp) round funcao para limitar casa no float
+                        var_erro = True
+                        print("Valor válido:", valor_saque_tmp)
+                    except ValueError:
+                        print("Valor inválido! Digite um número.")
+                        
+                    if var_erro:
+                        valor_saque = valor_saque_tmp
                         # Saques na conta Corrente: 5% de taxa
                         # Saques na conta Corrente: Poupança 0% de taxa
                         # Saques na conta Corrente: Salario 2% de taxa
                         if tipo == "Corrente":
                             test_saque = extrato_bancario - (valor_saque * 1.05)
+                            test_saque = round(float(test_saque), 2)
                             taxa_saque = valor_saque * 0.05
+                            taxa_saque = round(float(taxa_saque), 2)
                             if test_saque >= 0:
                                 print("\nSaque ", valor_saque , "Com taxa 5%: ", taxa_saque ," Saldo: ", test_saque, "Tipo de conta: ", tipo)
                                 mascara = leitura_excel["numero_conta"] == numero_conta
