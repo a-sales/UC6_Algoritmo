@@ -1,0 +1,7 @@
+# Instanciando um objeto
+cliente1 = Cliente("Adenilson", "Salario", 1234, '00000001-10', 400, 500)
+cliente2 = Cliente("Daniel", "Poupanca", 4321, '00000002-20', 401, 600)
+
+print(cliente1.__str__())
+print(cliente2.__str__())
+
